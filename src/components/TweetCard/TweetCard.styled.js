@@ -1,11 +1,15 @@
 import styled, { css } from 'styled-components';
 
-export const CardBox = styled.li`
+export const CardBox = styled.ul`
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  gap: 20px;
 `;
 
-export const Card = styled.div`
+export const Card = styled.li`
+  width: 380px;
   position: relative;
   padding: 28px 36px;
   background: linear-gradient(
@@ -15,7 +19,6 @@ export const Card = styled.div`
     #4b2a99 78.99%
   );
   box-shadow: -2.5777px 6.87386px 20.62157px 0px rgba(0, 0, 0, 0.23);
-  /* display: flex; */
   justify-content: center;
   border-radius: 20px;
 
@@ -72,7 +75,6 @@ export const UserAvatarBorder = styled.div`
 
 export const UserAvatarContainer = styled.div`
   width: 62px;
-  /* height: 62px; */
 
   position: absolute;
   background: #5736a3;
@@ -89,13 +91,12 @@ export const UserAvatar = styled.img`
 `;
 
 export const UserInfoWrapper = styled.ul`
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-gap: 16px;
-margin-bottom: 20px;
-
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
 `;
 export const UserInfoItem = styled.li`
   color: #ebd8ff;
@@ -105,7 +106,6 @@ export const UserInfoItem = styled.li`
   font-style: normal;
 
   text-transform: uppercase;
-
 `;
 
 export const FollowButton = styled.button`
@@ -128,10 +128,10 @@ export const FollowButton = styled.button`
   margin-bottom: 8px;
   cursor: pointer;
 
-  ${({ isFollowing }) =>
-    isFollowing
+  ${({ isfollowing }) =>
+    isfollowing
       ? css`
-          background: #5CD3A8;
+          background: #5cd3a8;
         `
       : css`
           background: #ebd8ff;

@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import Home from 'pages/Home/Home';
-import TweetsPage from 'pages/Tweets/Tweets';
+import TweetsPage from 'pages/TweetsPage/TweetsPage';
 import SharedLayout from './SharedLayout/SharedLayout';
 
 export const App = () => {

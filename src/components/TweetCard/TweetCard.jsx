@@ -1,6 +1,5 @@
 import {
   Card,
-  CardBox,
   FollowButton,
   Hero,
   Logo,
@@ -13,79 +12,74 @@ import {
 } from './TweetCard.styled';
 import logo from '../../assets/img/logo.png';
 import picture from '../../assets/img/picture.png';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 
-const TweetCard = () => {
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [users, setUsers] = useState(false);
-  const [followersQuery, setFollowersQuery] = useState(null);
+const TweetCard = ({ data }) => {
+  const [isfollowing, setIsFollowing] = useState(false);
+  const [user, setUser] = useState(data);
 
   useEffect(() => {
-    axios
-      .get('https://652a9ed64791d884f1fd27e6.mockapi.io/tweets/users')
-      .then(function (response) {
-        setUsers(response.data[1]);
-        setFollowersQuery(response.data[1].followers);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, []);
+    const storedIsFollowing = localStorage.getItem(`following_${user.id}`);
+    if (storedIsFollowing) {
+      setIsFollowing(JSON.parse(storedIsFollowing));
+    }
+  }, [user.id]);
 
   const togglefollow = () => {
-   
-    if (isFollowing) {
-      setFollowersQuery(followersQuery - 1);
+    if (isfollowing) {
       axios
         .put(
-          `https://652a9ed64791d884f1fd27e6.mockapi.io/tweets/users/${users.id}`,
-          { followers: followersQuery - 1 }
+          `https://652a9ed64791d884f1fd27e6.mockapi.io/tweets/users/${user.id}`,
+          { followers: user.followers - 1 }
         )
-        .then(function (response) {
-          console.log('added');
+        .then(() => {
+          localStorage.setItem(`following_${user.id}`, JSON.stringify(false));
+          setIsFollowing(false);
+          setUser({ ...user, followers: user.followers - 1 });
         })
-        .catch(function (error) {
+        .catch(error => {
           console.log(error);
         });
     } else {
-      setFollowersQuery(followersQuery + 1);
       axios
         .put(
-          `https://652a9ed64791d884f1fd27e6.mockapi.io/tweets/users/${users.id}`,
-          { followers: followersQuery + 1 }
+          `https://652a9ed64791d884f1fd27e6.mockapi.io/tweets/users/${user.id}`,
+          { followers: user.followers + 1 }
         )
-        .then(function (response) {
-          console.log('ok');
+        .then(() => {
+          localStorage.setItem(`following_${user.id}`, JSON.stringify(true));
+          setIsFollowing(true);
+          setUser({ ...user, followers: user.followers + 1 });
         })
-        .catch(function (error) {
+        .catch(error => {
           console.log(error);
         });
     }
-    setIsFollowing(!isFollowing);
+    setIsFollowing(!isfollowing);
   };
-
   return (
-    <CardBox>
-      <Card>
-        <Hero src={picture} alt="ex" />
-        <Logo src={logo} alt="img" />
-        <UserAvatarWrapper>
-          <UserAvatarBorder>
-            <UserAvatarContainer>
-              <UserAvatar src={users.avatar} />
-            </UserAvatarContainer>
-          </UserAvatarBorder>
-        </UserAvatarWrapper>
-        <UserInfoWrapper>
-          <UserInfoItem> {users.tweets} tweets</UserInfoItem>
-          <UserInfoItem>{followersQuery} followers</UserInfoItem>
-        </UserInfoWrapper>
-        <FollowButton onClick={togglefollow} isFollowing={isFollowing}>
-          {isFollowing ? 'following' : 'follow'}
-        </FollowButton>
-      </Card>
-    </CardBox>
+    <Card>
+      <Hero src={picture} alt="ex" />
+      <Logo src={logo} alt="img" />
+      <UserAvatarWrapper>
+        <UserAvatarBorder>
+          <UserAvatarContainer>
+            <UserAvatar src={user.avatar} />
+          </UserAvatarContainer>
+        </UserAvatarBorder>
+      </UserAvatarWrapper>
+      <UserInfoWrapper>
+        <UserInfoItem> {user.tweets} tweets</UserInfoItem>
+        <UserInfoItem>{user.followers} followers</UserInfoItem>
+      </UserInfoWrapper>
+      <FollowButton
+        onClick={togglefollow}
+        isfollowing={isfollowing ? isfollowing.toString() : null}
+      >
+        {isfollowing ? 'following' : 'follow'}
+      </FollowButton>
+    </Card>
   );
 };
 
